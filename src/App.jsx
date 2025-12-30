@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import * as petService from "./services/petServic"
 
 import './App.css'
+import PetList from './components/PetList/PetList'
 
 function App() {
   const [pets , setPets] = useState([])
@@ -10,18 +11,19 @@ function App() {
   // Once when the component first mounts
   useEffect(()=>{
     const getAllPets = async () =>{
+      try{
       const data = await petService.index()
       setPets(data)
+      }
+      catch(error){
+        console.log(error)
+      }
     }
 
     getAllPets()
   } , [])
 
-  return (
-    <>
-      <h1>Hello</h1>
-    </>
-  )
+  return <PetList pets={pets}/>
 }
 
 export default App

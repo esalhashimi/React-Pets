@@ -1,11 +1,13 @@
 import { useState , useEffect } from "react"
 import * as petService from "../../services/petService"
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
+import { Link } from "react-router"
 
-
-function PetDetail() {
+function PetDetail(props) {
+  const {findPetToUpdate, deletePet} = props
   const [pet , setPet] = useState(null)
 const {id} = useParams()
+const navigate = useNavigate()
 
 
 useEffect(
@@ -18,6 +20,18 @@ useEffect(
     if(id) getOnePet(id)
   }, [id]
 )
+
+const handleDelete = async ()=>{
+  const deletedPet = await petService.deleteOne(id)
+
+  if(deletedPet){
+    deletePet(id)
+    navigate("/")
+  }
+  else{
+    console.log("Something went wrong!")
+  }
+}
 
 if(!id){
   return <h1>Loading...</h1>
@@ -33,6 +47,11 @@ if(!pet){
       <h4>Name: {pet.name}</h4> 
       <h4> Age: {pet.age}</h4>
       <p>Breed: {pet.breed}</p>
+      <div>
+        <Link onClick={()=>{findPetToUpdate(id)}} to={`/pets/${id}/update`}>Edit</Link>
+        <br />
+        <button onClick={handleDelete}>Delete</button>
+      </div>
     </div>
     
   )

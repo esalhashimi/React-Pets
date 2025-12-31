@@ -37,8 +37,34 @@ const create = async (formData)=>{
 
 }
 
+const update = async (petId , formData)=>{
+    try{
+        const response = await axios.put(`${BASE_URL}/${petId}` , formData)
+        return response.data.pet
+    }
+    catch(error){
+        console.log(error)
+    }
+    
+
+}
+
+const deleteOne = async(petId , formData)=>{
+try{
+const response = await axios.delete(`${BASE_URL}/${petId}`)
+return response.data.pet
+}
+catch(error){
+    console.log(error)
+}
+}
+
+
+
 export{
     index,
     show,
-    create
+    create,
+    update,
+    deleteOne
 }

@@ -3,9 +3,9 @@ import * as petService from "../../services/petService"
 import { useNavigate } from "react-router"
 
 function PetForm(props) {
-    const {updatePets} = props
+   const { updatePets, petToUpdate, updateOnePet } = props;
     const navigate = useNavigate()
-    const [formState , setFormState] = useState({
+    const [formState , setFormState] = useState(petToUpdate ? petToUpdate :{
         name:"",
         age:0,
         breed:""
@@ -21,21 +21,26 @@ function PetForm(props) {
         setFormState(newFormState)
     }
 
-    const handleSubmit = async (event)=>{
-        event.preventDefault()
-        const payload = {...formState}
-        payload.age = Number(payload.age)
+    const handleSubmit = async (event) => {
+    event.preventDefault();
+    const payload = { ...formState };
+    payload.age = Number(payload.age);
 
-        const newPetCreated = await petService.create(payload)
-
-        if(newPetCreated){
-            updatePets(newPetCreated)
-            navigate("/")
+    if (petToUpdate) {
+        const updatedPet = await petService.update(petToUpdate._id, payload);
+        if (updatedPet) {
+            updateOnePet(updatedPet); 
+            navigate("/");
         }
-        else{
-            console.log("something went wrong")
-        }
+        return; 
     }
+
+    const newPetCreated = await petService.create(payload);
+    if (newPetCreated) {
+        updatePets(newPetCreated);
+        navigate("/");
+    }
+};
   return (
     <div>
         <h1>Pet Form</h1>
